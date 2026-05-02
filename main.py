@@ -54,6 +54,8 @@ FPS = 60
 run = True
 finish = False
 
+ball = GameSprite("bal.jpg", win_w / 2, win_h / 2, 50, 50, 0)
+
 while run:
     for e in event.get():
         if e.type == QUIT:
@@ -66,6 +68,7 @@ while run:
         window.blit(background, (0, 0))
         player_left.reset()
         player_right.reset()
+        ball.reset()
 
     display.update()
     clock.tick(FPS)
