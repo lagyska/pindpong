@@ -30,22 +30,21 @@ class Player(GameSprite):
 class Ball(GameSprite):
     def __init__(self, player_image, player_x, player_y, size_x, size_y, player_speed):
         super().__init__(player_image, player_x, player_y, size_x, size_y, player_speed)
-        self.speed_y = player_speed
         self.speed_x = player_speed
+        self.speed_y = player_speed
         self.coef_x = 1
         self.coef_y = 1
     def update(self):
         self.rect.x += self.speed_x
         self.rect.y += self.speed_y
-        def switch_x(self):
-            self.speed_x *= -1
-            self.coef_x += 0.05
-            self.speed_x *= coef_x
-            
-        def switch_y(self):
-            self.speed_y *= -1  
-            self.coef_y += 0.05
-            self.speed_y *= coef_x
+    def switch_x(self):
+        self.speed_x *= -1
+        self.coef_x += 0.05
+        self.speed_x *= self.coef_x
+    def switch_y(self):
+        self.speed_y *= -1
+        self.coef_y += 0.03
+        self.speed_y *= self.coef_y
 
 win_w = 700
 win_h = 500
@@ -61,12 +60,12 @@ background = transform.scale(
 
 player_left = Player("i.webp", 50, 10, 48, 130, 10)
 player_right = Player("rac.png", win_w - 30 - 48, win_h - 10 - 130, 48, 130, 10)
-ball = GameSprite("bal.jpg", win_w / 2 +20, win_h / 2 - 20, 50, 50, 17)
+ball = Ball("bal.jpg", win_w / 2 +20, win_h / 2 - 20, 50, 50, 17)
 
 font.init()
 font_text = font.Font(None, 72)
-win_right_text = font_text.render("WIN RIGHT!",1,(0,255,0))
-win_left_text = font_text.render("WIN FEFT!",1,(0,255,0))
+win_left_text = font_text.render("WIN LEFT!", 1, (0, 255, 0))
+win_right_text = font_text.render("WIN RIGHT!", 1, (0, 255, 0))
 result_text = win_left_text
 
 clock = time.Clock()
@@ -86,23 +85,24 @@ while run:
 
         if ball.rect.y < 0 or ball.rect.y > win_h - ball.image.get_height():
             ball.switch_y()
-
+        
         if sprite.collide_rect(ball, player_left) or sprite.collide_rect(ball, player_right):
-            ball.switch_y()
-
+            ball.switch_x()
+        
         if ball.rect.x < 0:
             result_text = win_right_text
             finish = True
-
-        if ball.rect.x > win_w - ball.image.ret_width():
+        
+        if ball.rect.x > win_w - ball.image.get_width():
             result_text = win_left_text
-            finis = True
+            finish = True
         window.blit(background, (0, 0))
         player_left.reset()
         player_right.reset()
         ball.reset()
-        else:
-            windows.blit(result_text)
+
+    else:
+        window.blit(result_text, (200, win_h / 2 - 40))
 
     display.update()
     clock.tick(FPS)
