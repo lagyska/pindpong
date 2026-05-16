@@ -68,6 +68,10 @@ win_left_text = font_text.render("WIN LEFT!", 1, (0, 255, 0))
 win_right_text = font_text.render("WIN RIGHT!", 1, (0, 255, 0))
 result_text = win_left_text
 
+left_score = 0
+right_score = 0
+score_text = font_text.render(f"{left_score} : {right_score}", 1, (255, 255, 255))
+
 clock = time.Clock()
 FPS = 60
 run = True
@@ -77,6 +81,19 @@ while run:
     for e in event.get():
         if e.type == QUIT:
             run = False
+
+        if e.type == KEYDOWN and e.key == K_r:
+            finish = False
+            player_left.rect.x = 50
+            player_left.rect.y = 10
+            player_right.rect.x = win_w - 30 - 48
+            player_right.rect.y = win_h - 10 - 130
+            ball.rect.x = win_w / 2 + 20
+            ball.rect.y = win_h / 2 - 20
+            ball.speed_x = 17
+            ball.speed_y = 17
+            ball.coef_x = 1
+            ball.coef_y = 1
 
     if not finish:
         player_left.update_l()
@@ -90,13 +107,18 @@ while run:
             ball.switch_x()
         
         if ball.rect.x < 0:
+            right_score += 1
+            score_text = font_text.render(f"{left_score} : {right_score}", 1, (255, 255, 255))
             result_text = win_right_text
             finish = True
         
         if ball.rect.x > win_w - ball.image.get_width():
+            left_score += 1
+            score_text = font_text.render(f"{left_score} : {right_score}", 1, (255, 255, 255))
             result_text = win_left_text
             finish = True
         window.blit(background, (0, 0))
+        window.blit(score_text, (win_w/2 - score_text.get_width()/2, 20))
         player_left.reset()
         player_right.reset()
         ball.reset()
