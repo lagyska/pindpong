@@ -21,11 +21,17 @@ class Player(GameSprite):
             self.rect.y += self.speed
 
     def update_r(self):
-        keys = key.get_pressed()
-        if keys[K_UP] and self.rect.y > 5:
-            self.rect.y -= self.speed 
-        if keys[K_DOWN] and self.rect.y < win_h - 135:
-            self.rect.y += self.speed
+        ball_center_y = ball.rect.y + ball.rect.height / 2
+        bot_center_y = self.rect.y + self.rect.height / 2
+        
+        bot_speed = 5
+        
+        if ball_center_y < bot_center_y - 5: 
+            if self.rect.y > 5:
+                self.rect.y -= bot_speed
+        elif ball_center_y > bot_center_y + 5:  
+            if self.rect.y < win_h - 135:
+                self.rect.y += bot_speed
 
 class Ball(GameSprite):
     def __init__(self, player_image, player_x, player_y, size_x, size_y, player_speed):
@@ -60,14 +66,17 @@ background = transform.scale(
 
 player_left = Player("i.webp", 50, 10, 48, 130, 10)
 player_right = Player("rac.png", win_w - 30 - 48, win_h - 10 - 130, 48, 130, 10)
-ball = Ball("bal.jpg", win_w / 2 +20, win_h / 2 - 20, 50, 50, 17)
+ball = Ball("bal.jpg", win_w / 2 +20, win_h / 2 - 20, 50, 50, 4)
 
 font.init()
 font_text = font.Font(None, 72)
+font_t = font.Font(None, 30)
 win_left_text = font_text.render("WIN LEFT!", 1, (0, 255, 0))
 win_right_text = font_text.render("WIN RIGHT!", 1, (0, 255, 0))
+restart_text = font_t.render("нажмите r чтобы продолжить", 1, (0, 0, 255))
 result_text = win_left_text
-
+bot_speed = 5
+bot_speed_text = font_t.render(f"Изменить сложность: {bot_speed} (UP/DOWN)", 1, (255, 255, 0))
 left_score = 0
 right_score = 0
 score_text = font_text.render(f"{left_score} : {right_score}", 1, (255, 255, 255))
@@ -90,14 +99,25 @@ while run:
             player_right.rect.y = win_h - 10 - 130
             ball.rect.x = win_w / 2 + 20
             ball.rect.y = win_h / 2 - 20
-            ball.speed_x = 17
-            ball.speed_y = 17
+            ball.speed_x = 4
+            ball.speed_y = 4
             ball.coef_x = 1
             ball.coef_y = 1
+            bot_speed = 5
+
+        if e.type == KEYDOWN:
+            if e.key == K_UP:
+                bot_speed = min(bot_speed + 1, 20)
+                bot_speed_text = font_t.render(f"Изменить сложность: {bot_speed} (UP/DOWN)", 1, (255, 255, 0))
+            if e.key == K_DOWN:
+                bot_speed = max(bot_speed - 1, 1) 
+                bot_speed_text = font_t.render(f"Изменить сложность: {bot_speed} (UP/DOWN)", 1, (255, 255, 0))
+                
+
 
     if not finish:
         player_left.update_l()
-        player_right.update_r()
+        player_right.update_r()  
         ball.update()
 
         if ball.rect.y < 0 or ball.rect.y > win_h - ball.image.get_height():
@@ -122,9 +142,10 @@ while run:
         player_left.reset()
         player_right.reset()
         ball.reset()
-
+        window.blit(bot_speed_text, (10, win_h - 30))
     else:
         window.blit(result_text, (200, win_h / 2 - 40))
-
+        window.blit(restart_text, (197, win_h / 2))
+        
     display.update()
     clock.tick(FPS)
