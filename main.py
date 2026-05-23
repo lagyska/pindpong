@@ -1,6 +1,9 @@
 from pygame import *
 from random import randint, random
-
+mixer.init()
+mixer.music.load("single_frog_croak.mp3") 
+mixer.music.set_volume(0.5)  
+mixer.music.play(-1)  
 class GameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, size_x, size_y, player_speed):
         super().__init__()
