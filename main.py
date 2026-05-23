@@ -60,13 +60,13 @@ window = display.set_mode((win_w, win_h))
 display.set_caption("pingpong")
 
 background = transform.scale(
-    image.load("background.jpg"),
+    image.load("i.webp"),
     (win_w, win_h)
 )
 
-player_left = Player("i.webp", 50, 10, 48, 130, 10)
-player_right = Player("rac.png", win_w - 30 - 48, win_h - 10 - 130, 48, 130, 10)
-ball = Ball("bal.jpg", win_w / 2 +20, win_h / 2 - 20, 50, 50, 4)
+player_left = Player("racc1.jpg", 50, 10, 48, 130, 10)
+player_right = Player("racc2.jpg", win_w - 30 - 48, win_h - 10 - 130, 48, 130, 10)
+ball = Ball("ball.jpg", win_w / 2 +20, win_h / 2 - 20, 50, 50, 4)
 
 font.init()
 font_text = font.Font(None, 72)
@@ -145,7 +145,7 @@ while run:
         window.blit(bot_speed_text, (10, win_h - 30))
     else:
         window.blit(result_text, (200, win_h / 2 - 40))
-        window.blit(restart_text, (197, win_h / 2))
+        window.blit(restart_text, (195, win_h / 2))
         
     display.update()
     clock.tick(FPS)
